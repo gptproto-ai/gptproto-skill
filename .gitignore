@@ -1,0 +1,13 @@
+# Local macOS metadata and credentials must never enter the published Skill.
+.DS_Store
+.env
+.env.*
+!.env.example
+*.local.*
+*.pem
+*.key
+*.p12
+*.pfx
+*.log
+*.sqlite
+*.db
