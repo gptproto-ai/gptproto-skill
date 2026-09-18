@@ -22,15 +22,15 @@ Start a new Codex conversation after installation.
 
 ## Prerequisites
 
-Install and configure GPTProto CLI independently:
+Install GPTProto CLI independently. Set the API Key in **your own terminal**, never in an AI chat; replace the placeholder locally:
 
 ```bash
 gptproto --version
-gptproto key set --key YOUR_API_KEY
+gptproto key set --key YOUR_GPTPROTO_API_KEY
 gptproto config
 ```
 
-The Skill never stores a key or changes the selected server unless the user asks.
+The Skill only checks whether a key is configured. It never asks you to paste the key into chat or changes the selected server unless you ask.
 
 ## Runtime flow
 

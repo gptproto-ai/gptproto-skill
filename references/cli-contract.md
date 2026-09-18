@@ -21,7 +21,7 @@ gptproto task get <TASK_ID> [--video]
 gptproto task wait <TASK_ID> [--video]
 ```
 
-`text`, `image`, `video`, `audio`, `call`, and `generate` are intentionally not public commands in this contract.
+`text`, `image`, `video`, `audio`, `call`, and `generate` are intentionally not public commands in this contract. `gptproto key set --key KEY` is a command for the user to run in their own terminal; the Skill must not receive the real key in chat or execute that command with a real key supplied through chat.
 
 ## Request inputs
 

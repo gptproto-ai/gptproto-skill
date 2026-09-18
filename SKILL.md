@@ -88,6 +88,14 @@ Use `gptproto custom create <resource>` only for the existing custom resources e
 
 ## Safety and configuration
 
-Before the first operation, run `gptproto --version` and `gptproto config`. Preserve the user's selected base URL and API key. If credentials are missing, ask the user to configure them locally with `gptproto key set --key YOUR_API_KEY`; never request, display, or write a secret into a file.
+Before the first operation, run `gptproto --version` and `gptproto config`. Preserve the user's selected base URL and API key. Check only the `api_key_configured` boolean; never read or print the key itself.
+
+If the key is missing, tell the user to run this command **in their own terminal**, replacing the placeholder there:
+
+```bash
+gptproto key set --key YOUR_GPTPROTO_API_KEY
+```
+
+Explicitly tell the user not to paste the real `sk-...` key into the chat. Ask them to reply only "configured" when done, then rerun `gptproto config` to verify `api_key_configured: true`. Do not ask for the key, include a real key in an agent-run command, or store it in a chat-generated file. If the user pastes a key into chat anyway, do not repeat or use it; tell them to rotate it and configure the replacement locally.
 
 Do not silently change models, providers, routes, or environments after a validation, channel, or service error. Report the actual failure and re-read the relevant model or API descriptor before suggesting a corrected request.
