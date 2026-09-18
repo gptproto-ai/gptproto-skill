@@ -8,6 +8,9 @@ The CLI has three public responsibilities: discover models and their call format
 gptproto config
 gptproto key set --key KEY
 gptproto key remove
+gptproto --version
+gptproto version [--json]
+gptproto update [VERSION]
 
 gptproto models list [--capability text|image|video|audio] [--json]
 gptproto model <provider/model> [--json]
@@ -21,7 +24,7 @@ gptproto task get <TASK_ID> [--video]
 gptproto task wait <TASK_ID> [--video]
 ```
 
-`text`, `image`, `video`, `audio`, `call`, and `generate` are intentionally not public commands in this contract. `gptproto key set --key KEY` is a command for the user to run in their own terminal; the Skill must not receive the real key in chat or execute that command with a real key supplied through chat.
+`text`, `image`, `video`, `audio`, `call`, and `generate` are intentionally not public commands in this contract. `gptproto key set --key KEY` is a command for the user to run in their own terminal; the Skill must not receive the real key in chat or execute that command with a real key supplied through chat. `gptproto version` queries published versions from npm; `gptproto update` installs npm's latest release, and a version argument installs that exact published version. The user must request an update before the Skill runs it.
 
 ## Request inputs
 

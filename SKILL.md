@@ -1,11 +1,17 @@
 ---
 name: gptproto-skill
-description: Discover GPTProto model interfaces and execute their documented native request formats through GPTProto CLI.
+description: Help people create text, images, video, or audio with GPTProto from natural-language requests, using the CLI's live model interfaces.
 ---
 
 # GPTProto CLI
 
 Use GPTProto CLI as a transparent interface executor. Do not use provider-normalizing commands such as `text`, `image`, `video`, or `audio`; they are not part of this Skill's contract. Build the provider's documented request body and call `gptproto request`.
+
+## User-facing flow
+
+Let the user describe the desired result in ordinary language, such as "make a picture of a cat" or "summarize this text." Infer the output capability from that goal; do not require the user to know CLI commands, endpoints, provider names, JSON fields, or the difference between official and custom APIs. If no model is named, find one in the live catalog whose documented interface supports the goal, and briefly name the model you chose. Ask one plain-language question only when a missing choice or input materially changes the result. If a model or required option is unavailable, explain the limitation in plain language rather than dumping raw interface JSON.
+
+Handle discovery, native request construction, polling, and result extraction yourself. Show the generated text or media URL and a concise status; show request bodies, raw JSON, or transport details only when the user asks. Do not silently switch to another model or spend money on a retry after a failed generation.
 
 ## Required discovery flow
 
@@ -86,16 +92,22 @@ gptproto custom create image \
 
 Use `gptproto custom create <resource>` only for the existing custom resources exposed by the CLI. Use `gptproto request` for official-compatible APIs and any interface represented by a documented route.
 
+## CLI versions
+
+For a version question, run `gptproto version` to show the installed version, npm's `latest` release, and any higher published versions. `gptproto --version` only checks the installed version. When the user explicitly asks to update, use `gptproto update` for npm's latest release or `gptproto update <published-version>` for a requested version; verify with `gptproto --version` afterward. Do not update merely because a newer version exists. If npm says the package is not published, explain that this GitHub-installed copy must be refreshed from its checkout instead.
+
 ## Safety and configuration
 
 Before the first operation, run `gptproto --version` and `gptproto config`. Preserve the user's selected base URL and API key. Check only the `api_key_configured` boolean; never read or print the key itself.
 
-If the key is missing, tell the user to run this command **in their own terminal**, replacing the placeholder there:
+If `gptproto` is not installed or the shell cannot find it, explain that the CLI and the Skill are separate installations. Give the user `npm install -g @gptproto-ai/cli`, offer to perform the installation only if they ask, and then verify with `gptproto --version`. If npm or Node.js is missing, explain that prerequisite in plain language. Do not proceed to model calls until the CLI works.
+
+If the key is missing, show this command with a placeholder and ask the user to run it **in their own terminal**, replacing the placeholder there:
 
 ```bash
 gptproto key set --key YOUR_GPTPROTO_API_KEY
 ```
 
-Explicitly tell the user not to paste the real `sk-...` key into the chat. Ask them to reply only "configured" when done, then rerun `gptproto config` to verify `api_key_configured: true`. Do not ask for the key, include a real key in an agent-run command, or store it in a chat-generated file. If the user pastes a key into chat anyway, do not repeat or use it; tell them to rotate it and configure the replacement locally.
+Explicitly tell the user not to paste the real `sk-...` key into the chat. If local computer control is available on macOS, open Terminal with `open -a Terminal` after showing the command, so the user can paste and complete it there. Do not execute the placeholder command automatically. If opening Terminal fails or computer control is unavailable, tell the user to open a terminal and run the shown command. Ask them to reply only "configured" when done, then rerun `gptproto config` to verify `api_key_configured: true`. Do not ask for the key, include a real key in an agent-run command, or store it in a chat-generated file. If the user pastes a key into chat anyway, do not repeat or use it; tell them to rotate it and configure the replacement locally.
 
 Do not silently change models, providers, routes, or environments after a validation, channel, or service error. Report the actual failure and re-read the relevant model or API descriptor before suggesting a corrected request.

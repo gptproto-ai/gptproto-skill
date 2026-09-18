@@ -1,6 +1,6 @@
 # GPTProto Skill
 
-An installable Skill that lets an AI agent discover GPTProto model interfaces, build native request JSON, run GPTProto CLI, and return extracted results.
+An installable Skill that lets people ask for text, images, video, or audio in ordinary language. The AI discovers GPTProto model interfaces, builds native requests, runs GPTProto CLI, and returns the result.
 
 It does not maintain a model list, map one provider's schema to another, or contain a duplicate provider SDK. GPTProto and the GPTProto SDK remain the interface-contract source of truth.
 
@@ -12,7 +12,7 @@ For local development:
 npx skills add /path/to/gptproto-skill --skill gptproto-skill --global --agent codex --yes
 ```
 
-After publishing the repository as `gptproto-ai/gptproto-skill`:
+From the public GitHub repository:
 
 ```bash
 npx skills add gptproto-ai/gptproto-skill --skill gptproto-skill --global --agent codex --yes
@@ -22,15 +22,18 @@ Start a new Codex conversation after installation.
 
 ## Prerequisites
 
-Install GPTProto CLI independently. Set the API Key in **your own terminal**, never in an AI chat; replace the placeholder locally:
+The Skill and the CLI are separate installations. Install GPTProto CLI first, then set the API Key in **your own terminal**, never in an AI chat; replace the placeholder locally:
 
 ```bash
+npm install -g @gptproto-ai/cli
 gptproto --version
 gptproto key set --key YOUR_GPTPROTO_API_KEY
 gptproto config
 ```
 
-The Skill only checks whether a key is configured. It never asks you to paste the key into chat or changes the selected server unless you ask.
+The Skill only checks whether a key is configured. It never asks you to paste the key into chat or changes the selected server unless you ask. On a local Mac, it can open Terminal for you to run the setup command; if that is unavailable, it tells you exactly what to run.
+
+You can then ask naturally: "Make a picture of a cat," "Summarize this document," or "Which GPTProto CLI version am I using?" The Skill handles model discovery and native request details. If you explicitly ask to update the CLI, it uses `gptproto update` or `gptproto update <version>` after checking npm's published versions.
 
 ## Runtime flow
 

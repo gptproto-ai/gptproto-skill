@@ -1,4 +1,4 @@
 interface:
   display_name: "GPTProto CLI"
-  short_description: "Discover GPTProto interfaces and execute their native request bodies through the CLI"
-  default_prompt: "Use $gptproto-skill to discover the right GPTProto interface and execute my request through GPTProto CLI."
+  short_description: "Create text, images, video, and audio with GPTProto"
+  default_prompt: "Use $gptproto-skill to help me create something with GPTProto. Choose an available model and handle the CLI steps for me."
