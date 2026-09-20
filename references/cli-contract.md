@@ -1,6 +1,6 @@
 # GPTProto CLI contract
 
-The CLI has three public responsibilities: discover models and their call formats, execute a native request body, and extract a final result.
+The CLI has four public responsibilities: discover models and their call formats, query live public pricing, execute a native request body, and extract a final result.
 
 ## Commands
 
@@ -15,6 +15,10 @@ gptproto update [VERSION]
 gptproto models list [--capability text|image|video|audio] [--json]
 gptproto model <provider/model> [--json]
 
+gptproto pricing list [--capability text|image|video|audio] [--mode TAG] [--search TEXT] [--sort price|name] [--limit N] [--json]
+gptproto pricing <text|image|images|video|videos|audio> [--mode TAG] [--cheapest N] [--json]
+gptproto pricing <provider/model> [--json]
+
 gptproto request <METHOD> <PATH> --json '<native JSON object>'
 gptproto request <METHOD> <PATH> --body request.json
 gptproto request <METHOD> <PATH> --form name=value --file field=local-file
@@ -25,6 +29,12 @@ gptproto task wait <TASK_ID> [--video]
 ```
 
 `text`, `image`, `video`, `audio`, `call`, and `generate` are intentionally not public commands in this contract. `gptproto key set --key KEY` is a command for the user to run in their own terminal; the Skill must not receive the real key in chat or execute that command with a real key supplied through chat. `gptproto version` queries published versions from npm; `gptproto update` installs npm's latest release, and a version argument installs that exact published version. The user must request an update before the Skill runs it.
+
+## Pricing
+
+`gptproto pricing` reads GPTProto's live public model catalog and does not require an API key. Use an exact `provider/model` to inspect one model, a capability shorthand to compare one output category, or `pricing list` for broader filtering. `--mode` matches the catalog's exact `modelTag` value, such as `text-to-image` or `image-to-video`; it is not forwarded to a generation endpoint. `--search` searches catalog model identifiers and names. `--cheapest N` is a convenience for price sorting plus a result limit.
+
+JSON output contains the model identity, capability and tags, normalized rates, billing unit, and `starting_price`. A low `starting_price` is useful for ordering candidates but is not an exact cost estimate. Do not compare unlike billing units as though they were equivalent, and do not treat catalog presence as evidence of route compatibility or channel availability. After price-based selection, validate the candidate with `gptproto model <provider/model> --json` before constructing a request.
 
 ## Request inputs
 

@@ -1,6 +1,6 @@
 ---
 name: gptproto-skill
-description: Help people create text, images, video, or audio with GPTProto from natural-language requests, using the CLI's live model interfaces.
+description: Help people create text, images, video, or audio with GPTProto from natural-language requests, using the CLI's live model interfaces and pricing catalog.
 ---
 
 # GPTProto CLI
@@ -13,6 +13,28 @@ Let the user describe the desired result in ordinary language, such as "make a p
 
 Handle discovery, native request construction, polling, and result extraction yourself. Show the generated text or media URL and a concise status; show request bodies, raw JSON, or transport details only when the user asks. Do not silently switch to another model or spend money on a retry after a failed generation.
 
+## Live pricing and cost-aware selection
+
+Use the CLI's live pricing catalog when the user asks about a model's price, asks for a cheap or budget option, wants models compared by cost, or makes cost a material selection criterion. Do not query pricing for every generation request when price is irrelevant.
+
+```bash
+# One exact catalog model
+gptproto pricing <provider/model> --json
+
+# Cheapest models for an output type and catalog mode
+gptproto pricing <text|image|video|audio> \
+  --mode <catalog-model-tag> --sort price --limit 3 --json
+
+# Search the complete public pricing catalog
+gptproto pricing list --search <text> --json
+```
+
+Translate the user's goal into a broad capability and, when useful, the catalog's exact `modelTag`: `text-to-text`, `text-to-image`, `image-edit`, `image-to-image`, `text-to-video`, or `image-to-video`. For audio and future modes, use only tags returned by the live catalog; never invent a tag. The pricing command's `--mode` is a catalog filter, not an API request parameter and not proof that a route accepts a field named `mode`.
+
+The catalog is dynamic, so never hardcode prices in the Skill or rely on remembered values. Explain the published billing unit with each price. Token, time, and per-generation prices are not directly comparable; `starting_price` is a sorting aid, not a guaranteed final request total. When the user asks for the cheapest option, normally present a short list of up to three compatible candidates with their price and unit before making a paid request.
+
+Pricing is selection metadata only. A price result does not prove that the model is callable, that the user's account has a working channel, or that it supports the required inputs. After choosing a candidate, always run the normal model discovery flow below. If the installed CLI does not recognize `gptproto pricing`, report that pricing requires a newer CLI and offer `gptproto version`; update only when the user explicitly asks.
+
 ## Required discovery flow
 
 Before creating a request, discover the live model interface:
@@ -22,7 +44,7 @@ gptproto models list --capability <text|image|video|audio> --json
 gptproto model <provider/model> --json
 ```
 
-The selected model descriptor is authoritative for the model-to-interface mapping. Read its matching `interfaces[]` item:
+The selected model descriptor is authoritative for the model-to-interface mapping; pricing results never replace it. Read its matching `interfaces[]` item:
 
 - `method` and `path` identify the endpoint;
 - `model_format` specifies whether the provider prefix belongs in `model`;

@@ -33,13 +33,14 @@ gptproto config
 
 The Skill only checks whether a key is configured. It never asks you to paste the key into chat or changes the selected server unless you ask. On a local Mac, it can open Terminal for you to run the setup command; if that is unavailable, it tells you exactly what to run.
 
-You can then ask naturally: "Make a picture of a cat," "Summarize this document," or "Which GPTProto CLI version am I using?" The Skill handles model discovery and native request details. If you explicitly ask to update the CLI, it uses `gptproto update` or `gptproto update <version>` after checking npm's published versions.
+You can then ask naturally: "Make a picture of a cat," "Summarize this document," "What does openai/gpt-4.1 cost?", "Find three inexpensive text-to-video models," or "Which GPTProto CLI version am I using?" The Skill handles model discovery, live price lookup, and native request details. If you explicitly ask to update the CLI, it uses `gptproto update` or `gptproto update <version>` after checking npm's published versions.
 
 ## Runtime flow
 
 ```text
 user request
   -> gptproto models list
+  -> gptproto pricing ... (only when price affects the choice)
   -> gptproto model <provider/model>
   -> native JSON request body
   -> gptproto request or gptproto custom create
